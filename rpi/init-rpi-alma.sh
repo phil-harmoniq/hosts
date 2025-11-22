@@ -15,7 +15,7 @@ add_shell_config()
     tmp_dir="/tmp/hosts/rpi"
 
     echo "Downloading shell config to $tmp_dir"
-    mkdir "$tmp_dir/shell/.bashrc.d"
+    mkdir -p "$tmp_dir/shell/.bashrc.d"
 
     curl "$base_url/shell/.bashrc.d/aliases" > "$tmp_dir/shell/.bashrc.d/aliases"
     curl "$base_url/shell/.bashrc.d/prompt" > "$tmp_dir/shell/.bashrc.d/prompt"

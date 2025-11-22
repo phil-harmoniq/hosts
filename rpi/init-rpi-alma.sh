@@ -2,36 +2,37 @@
 
 set -euo pipefail
 script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-base_url=""
+base_url="https://raw.githubusercontent.com/phil-harmoniq/hosts/refs/heads/main/rpi"
 
 main()
 {
     add_shell_config
-    install_packages
-    enable_cockpit
+    # install_packages
 }
 
 add_shell_config()
 {
-    SOURCE_BASH_CONFIG_DIR="$script_dir/.bashrc.d"
-    DEST_BASH_CONFIG_DIR="$HOME/.bashrc.d/"
+    tmp_dir="/tmp/hosts/rpi"
 
-    mkdir -p "$DEST_BASH_CONFIG_DIR"
-    cp "$SOURCE_BASH_CONFIG_DIR/aliases" "$DEST_BASH_CONFIG_DIR"
-    cp "$SOURCE_BASH_CONFIG_DIR/prompt" "$DEST_BASH_CONFIG_DIR"
-    cp "$script_dir/.inputrc" "$HOME"
+    echo "Downloading shell config to $tmp_dir"
+    mkdir "$tmp_dir/shell/.bashrc.d"
+
+    curl "$base_url/shell/.bashrc.d/aliases" > "$tmp_dir/shell/.bashrc.d/aliases"
+    curl "$base_url/shell/.bashrc.d/prompt" > "$tmp_dir/shell/.bashrc.d/prompt"
+    curl "$base_url/shell/.inputrc" > "$tmp_dir/shell/.inputrc"
+    ls -lhaF "$tmp_dir/shell"
+    # DEST_BASH_CONFIG_DIR="$HOME/.bashrc.d/"
+
+    # mkdir -p "$DEST_BASH_CONFIG_DIR"
+    # cp "$SOURCE_BASH_CONFIG_DIR/aliases" "$DEST_BASH_CONFIG_DIR"
+    # cp "$SOURCE_BASH_CONFIG_DIR/prompt" "$DEST_BASH_CONFIG_DIR"
+    # cp "$script_dir/.inputrc" "$HOME"
 }
 
 install_packages()
 {
     dnf install epel-release
-    dnf install podman git btop tldr shellcheck fastfetch
-}
-
-enable_cockpit()
-{
-    systemctl enable cockpit
-    systemctl start cockpit
+    dnf install podman git btop tldr shellcheck fastfetch cockpit-files
 }
 
 main
